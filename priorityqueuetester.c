@@ -30,7 +30,6 @@ int main(void) {
     while (scanf("%d", &x) == 1) {
         p = malloc(sizeof(int));
         assert(p != NULL);
-
         *p = x;
         addEntry(pq, p);
     }
@@ -38,7 +37,8 @@ int main(void) {
     printf("debug print successful");
 
     while (pq->count != 0) {
-        printf("%i", *(int*) removeEntry(pq));
+        debugPrint(pq);
+        printf("\n%i; pcount is %u\n", *(int*) removeEntry(pq), pq->count);
     }
 
     destroyQueue(pq);

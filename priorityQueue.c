@@ -1,14 +1,8 @@
-//priorityQueue.c
-/**
- *
- * @author Max Blennemann
- * @version 11/6/23
- */
-
-#include "stdlib.h"
-#include "assert.h"
-#include "string.h"
-#include "stdbool.h"
+// priorityQueue.c
+#include <stdlib.h>
+#include <assert.h>
+#include <string.h>
+#include <stdbool.h>
 #include "pqueue.h"
 
 typedef struct pqueue {
@@ -16,8 +10,8 @@ typedef struct pqueue {
     unsigned count;
     unsigned size;
 
-    int (* compare)();
-} PriorityQueue;
+    int (* compare)(const void*, const void*);
+} PQ;
 
 #define DEFAULT_SIZE 10
 
@@ -30,6 +24,14 @@ PQ* createQueue(int (* compare)()) {
     toReturn->size = DEFAULT_SIZE;
     toReturn->compare = compare;
     return toReturn;
+}
+
+void debugPrint(PQ* pq) {
+    unsigned i = 0;
+    printf("Debug Below: (printing pq with length %u)\n", pq->count);
+    for (; i < pq->count; i++) {
+        printf("%u: %i, ", i, *(int*) pq->data[i]);
+    }
 }
 
 unsigned parent(unsigned i) {
@@ -46,7 +48,6 @@ unsigned rightChild(unsigned i) {
 
 void destroyQueue(PQ* pq) {
     assert(pq != NULL);
-    unsigned i = 0;
     free(pq->data);
     free(pq);
 }
@@ -64,17 +65,20 @@ void downHeapify(PQ* pq) {
         unsigned left = leftChild(index);
         unsigned right = rightChild(index);
         unsigned min = index;
-        if (left < pq->count && pq->compare(pq->data[left], pq->data[min]) > 0)
+        if (left < pq->count && pq->compare(pq->data[left], pq->data[min]) < 0) {
             min = left;
-        if (right < pq->count && pq->compare(pq->data[right], pq->data[min]) > 0)
+        }
+        if (right < pq->count && pq->compare(pq->data[right], pq->data[min]) < 0) {
             min = right;
+        }
         if (min != index) {
             void* temp = pq->data[min];
             pq->data[min] = pq->data[index];
             pq->data[index] = temp;
             index = min;
-        } else
+        } else {
             break;
+        }
     }
 }
 
@@ -91,7 +95,6 @@ void upHeapify(PQ* pq) {
 }
 
 void addEntry(PQ* pq, void* entry) {
-
     assert(pq != NULL);
     assert(entry != NULL);
     if (pq->count == pq->size) {
@@ -104,23 +107,15 @@ void addEntry(PQ* pq, void* entry) {
     upHeapify(pq);
 }
 
-void debugPrint(PQ* pq) {
-    unsigned i = 0;
-    printf("Debug Below: (printing pq with length %u)\n", pq->count);
-    for (; i < pq->count; i++) {
-        printf("%i, ", *(int*) pq->data[i]);
-    }
-}
-
-
 void* removeEntry(PQ* pq) {
     assert(pq != NULL);
-    assert(pq->count > 0);
+    if (pq->count == 0) return NULL;
     void* toReturn = pq->data[0];
     void* temp = pq->data[0];
-    pq->data[0] = pq->data[pq->count];
-    pq->data[pq->count] = temp;
+    pq->data[0] = pq->data[pq->count - 1];
+    pq->data[pq->count - 1] = temp;
     pq->count--;
     downHeapify(pq);
+
     return toReturn;
 }
