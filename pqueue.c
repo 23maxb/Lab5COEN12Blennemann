@@ -22,6 +22,14 @@ typedef struct pqueue {
 
 #define DEFAULT_SIZE 10
 
+/**
+ * Creates a new priority queue.
+ * The compare function should return a negative number if the first argument is less than the second,
+ *
+ * @param compare the function to compare two elements
+ * @return the new priority queue
+ * @timeComplexity O(1)
+ */
 PQ* createQueue(int (* compare)()) {
     PQ* toReturn = malloc(sizeof(PQ));
     assert(toReturn != NULL);
@@ -33,37 +41,67 @@ PQ* createQueue(int (* compare)()) {
     return toReturn;
 }
 
-void debugPrint(PQ* pq) {
-    unsigned i = 0;
-    printf("Debug Below: (printing pq with length %u)\n", pq->count);
-    for (; i < pq->count; i++) {
-        printf("%u: %i, ", i, *(int*) pq->data[i]);
-    }
-}
 
+/**
+ * Returns the parent of the given index.
+ *
+ * @param i the index
+ * @timeComplexity O(1)
+ */
 unsigned parent(unsigned i) {
     return (i - 1) / 2;
 }
 
+/**
+ * Returns the right child of the given index.
+ *
+ * @param i the index
+ * @timeComplexity O(1)
+ */
 unsigned leftChild(unsigned i) {
     return 2 * i + 1;
 }
 
+/**
+ * Returns the right child of the given index.
+ *
+ * @param i the index
+ * @timeComplexity O(1)
+ */
 unsigned rightChild(unsigned i) {
     return 2 * i + 2;
 }
 
+/**
+ * Destroys the queue.
+ *
+ * @param pq the queue to be destroyed
+ * @timeComplexity O(1)
+ */
 void destroyQueue(PQ* pq) {
     assert(pq != NULL);
     free(pq->data);
     free(pq);
 }
 
+/**
+ * The number of entries that the queue has.
+ *
+ * @param pq the queue
+ * @return the number of entries
+ * @timeComplexity O(1)
+ */
 int numEntries(PQ* pq) {
     assert(pq != NULL);
     return pq->count;
 }
 
+/**
+ * Fixes the heap by moving the element at the root downward until the heap property is satisfied.
+ *
+ * @param pq the priority queue to get the array from to fix
+ * @timeComplexity O(log n) where n is the number of elements in the heap
+ */
 void downHeapify(PQ* pq) {
     if (pq->count <= 1)
         return;
@@ -89,6 +127,12 @@ void downHeapify(PQ* pq) {
     }
 }
 
+/**
+ * Fixes the heap by moving the element at the end upward until the heap property is satisfied.
+ *
+ * @param pq the priority queue to get the array from to reheapify
+ * @timeComplexity O(log(n)) where n is the number of elements in the heap
+ */
 void upHeapify(PQ* pq) {
     if (pq->count <= 1)
         return;
@@ -101,6 +145,13 @@ void upHeapify(PQ* pq) {
     }
 }
 
+/**
+ * Adds an entry to the priority queue.
+ *
+ * @param pq the queue to add to
+ * @param entry the entry
+ * @timeComplexity O(1) amortized time; O(n) worst case scenario
+ */
 void addEntry(PQ* pq, void* entry) {
     assert(pq != NULL);
     assert(entry != NULL);
@@ -114,6 +165,16 @@ void addEntry(PQ* pq, void* entry) {
     upHeapify(pq);
 }
 
+/**
+ * Removes the entry with the highest priority.
+ * Returns NULL if the queue is empty.
+ * The caller is responsible for freeing the memory.
+ *
+ * @param pq the priority queue to modify
+ * @return the removed item
+ * @timeComplexity O(log(n)) where n is the number of elements in the heap
+ * because we need to reheapify
+ */
 void* removeEntry(PQ* pq) {
     assert(pq != NULL);
     if (pq->count == 0) return NULL;
@@ -123,6 +184,5 @@ void* removeEntry(PQ* pq) {
     pq->data[pq->count - 1] = temp;
     pq->count--;
     downHeapify(pq);
-
     return toReturn;
 }

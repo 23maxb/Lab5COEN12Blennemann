@@ -22,10 +22,11 @@
  * This function also updates the children's parent.
  * Nodes in this project have no children nodes that are accessible from the parent.
  *
- * @param data
- * @param left
- * @param right
- * @return
+ * @param data the count of the left node plus the right node
+ * @param left the node to the left or null
+ * @param right the node to the right or null
+ * @return the new node
+ * @timeComplexity O(1)
  */
 struct node* makeNode(int data, struct node* left, struct node* right) {
     struct node* newNode = malloc(sizeof(struct node));
@@ -116,8 +117,7 @@ void huffmanPack(char* infile, char* outfile) {
         }
 
     }
-    //add 1 more element to the end of leaves for eof
-    //TODO check if this works for eof
+
     struct node* eofNode = makeNode(0, NULL, NULL);
     leaves[ASCII_COUNT] = eofNode;
     addEntry(a, eofNode);
@@ -155,6 +155,16 @@ void huffmanPack(char* infile, char* outfile) {
     pack(infile, outfile, leaves);
 }
 
+/**
+ * Main function.
+ * Takes in 2 arguments, the infile and outfile.
+ * Writes to outfile.
+ * Reads from infile.
+ *
+ * @param argc the number of arguments
+ * @param argv the arguments
+ * @timeComplexity O(n) where n is the number of characters in the file
+ */
 int main(int argc, char* argv[]) {
     if (argc != 3) {
         printf("Usage: ./huffmanPack infile outfile\n");
