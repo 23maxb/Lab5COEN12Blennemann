@@ -14,7 +14,7 @@
 # include <stdlib.h>
 # include <assert.h>
 # include "pqueue.h"
-#include "priorityQueue.c"
+# include "priorityQueue.c"
 
 /*
  * Function:	intcmp
