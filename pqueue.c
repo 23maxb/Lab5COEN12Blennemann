@@ -1,4 +1,11 @@
 // priorityQueue.c
+/**
+ * Defines a priority Queue
+ * Uses a heap to store data
+ *
+ * @author Max Blennemann
+ * @author 11/13/23
+ */
 #include <stdlib.h>
 #include <assert.h>
 #include <string.h>

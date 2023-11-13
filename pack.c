@@ -45,6 +45,7 @@ void pack(char* infile, char* outfile, struct node* leaves[END + 1]) {
         root = root->parent;
 
     if (root->count != buf.st_size) {
+        fprintf(stderr, "%lu\n", buf.st_size);
         fprintf(stderr, "Sizes from file and tree mismatch.\n");
         exit(EXIT_FAILURE);
     }
